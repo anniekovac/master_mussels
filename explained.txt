@@ -1,0 +1,14 @@
+aMussel working modes explained:
+
+- sleep
+- normal
+- camera
+- motors
+- charging
+
+aPad working modes explained:
+
+- motors : when motors are working (aPad is moving)
+- charging_self : when sunlight is charging the aPad (only during the day!)
+- charging_mussels : when at least one aMussel is being charged by aPad
+- sleep : when nothing is happening (aPad is not even charging - night?)
