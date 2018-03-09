@@ -1,0 +1,7 @@
+This project is written in Python 3.6.1.
+
+Installing:
+
+python -m pip install simpy
+python -m pip install numpy
+python -m pip install matplotlib
