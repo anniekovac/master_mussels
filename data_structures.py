@@ -39,7 +39,7 @@ class EnergyBase(object):
         :return:
         """
         start = rospy.get_rostime().secs
-        finish_time = start + discharge_durations
+        finish_time = start + discharge_duration
         while rospy.get_rostime().secs < finish_time:
             self.energy -= 0.00001
 
@@ -51,10 +51,18 @@ class aMussel(EnergyBase):
         modes in every moment.
         :param energy: int (percentage of energy that mussels has in the moment)
         :param working_mode: string (one of 5 modes of working described above)
+        :param coordinates: tuple (x, y coordinate of a mussel)
+        :param set_of_events: list (list of events that should happend in a row ["sleep", "charge", ...])
+        :param on_surface: boolean (if mussel is on surface, True, else False)
         """
         super(aMussel, self).__init__(energy)
         self.working_mode = [working_mode]
         self.coordinates = (None, None)
+        self.set_of_events = []
+        if "charge" in self.working_mode:
+            self.on_surface = True
+        else:
+            self.on_surface = None  # because we don't know if mussel is on surface yet
 
 
 class aPad(EnergyBase):
@@ -83,3 +91,4 @@ if __name__ == '__main__':
     time = rospy.Time().now()
     print(time)
     my_pad.add_mussel_to_charge(my_mussel)
+
