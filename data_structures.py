@@ -23,13 +23,16 @@ class EnergyBase(object):
     def __init__(self, energy):
         self.energy = energy
 
-    def update_energy(self):
+    def update_energy(self, deltat, working_mode):
         """
         This function should calculate change of energy
         during certain deltaT and certain working state of
         aMussels and aPad.
         """
-        pass
+        if isinstance(self, aPad):
+            self.energy = self.energy + deltat * apad_mode_percentages[working_mode]
+        elif isinstance(self, aMussel):
+            self.energy = self.energy + deltat * mussel_mode_percentages[working_mode]
 
     def charge(self, charge_duration, charge_till_percentage = False):
         """
@@ -65,7 +68,7 @@ class EnergyBase(object):
 
 
 class aMussel(EnergyBase):
-    def __init__(self, energy, working_mode=["sleep"]):
+    def __init__(self, energy, working_mode=None):
         """
         Working mode has to be a list because there could be multiple working
         modes in every moment.
@@ -86,10 +89,10 @@ class aMussel(EnergyBase):
 
 
 class aPad(EnergyBase):
-    def __init__(self, energy, working_mode=["charging"]):
+    def __init__(self, energy, working_mode="charging_self"):
         super(aPad, self).__init__(energy)
         self.mussels_charging = []
-        self.working_mode = working_mode
+        self.working_mode = [working_mode]
         self.coordinates = (None, None)
 
     def add_mussel_to_charge(self, mussel_instance):
