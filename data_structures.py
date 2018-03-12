@@ -3,8 +3,8 @@ import rospy
 mussel_working_modes = ["sleep", "normal", "camera", "motors", "charging"]
 apad_working_modes = ["motors", "charging_self", "charging_mussels", "sleep"]
 
-mussel_mode_percentages = dict()
-apad_mode_percentages = dict()
+mussel_mode_percentages = dict()  # how much energy mussel loses during certain activity
+apad_mode_percentages = dict()  # how much energy mussel loses during certain activity
 
 charge_till = 90
 
@@ -17,8 +17,8 @@ class EnergyBase(object):
         """
         This function should simulate how
         object will be charged.
-        :param start_energy: int (percentage of objects energy)
-        :return: None
+        :param charge_duration: int (for how many seconds mussel will be charged)
+        :param charge_till_percentage: boolean (if you want to charge the mussel till certain percentage)
         """
         start = rospy.get_rostime().secs
         if charge_till:
@@ -82,6 +82,9 @@ class aPad(EnergyBase):
         print("Energy of mussel after charging: {}".format(mussel_instance.energy))
 
 
+# pitanje : sto s vremenom i punjenjem, praznjenjem ?
+# kako definirati punjenje, praznjenje u kontekstu vremena?
+# kako predstaviti vrijeme = u rosu je u sekundama, treba li skalirati?
 if __name__ == '__main__':
     my_mussel = aMussel(50)
     my_pad = aPad(10)

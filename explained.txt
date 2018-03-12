@@ -14,5 +14,6 @@ aPad working modes explained:
 - sleep : when nothing is happening (aPad is not even charging - night?)
 
 Charging
-In this commit, charging constitutes of simple addition of one percent
-of energy per second. 
+There are two "ways" of using charge() method:
+- with charge_duration argument: mussel will be charged for charge_duration seconds
+- with charge_till_percentage optional argument: mussel will be charged till certain percentage
