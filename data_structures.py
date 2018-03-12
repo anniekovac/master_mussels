@@ -1,7 +1,3 @@
-import simpy
-import time
-import random
-import numpy
 import rospy
 
 mussel_working_modes = ["sleep", "normal", "camera", "motors", "charging"]
@@ -10,15 +6,14 @@ apad_working_modes = ["motors", "charging_self", "charging_mussels", "sleep"]
 mussel_mode_percentages = dict()
 apad_mode_percentages = dict()
 
-#env = simpy.rt.RealtimeEnvironment(factor=1)
-#time = rospy.Time().now()
+charge_till = 90
 
 
 class EnergyBase(object):
     def __init__(self, energy):
         self.energy = energy
 
-    def charge(self, charge_duration):
+    def charge(self, charge_duration, charge_till_percentage = False):
         """
         This function should simulate how
         object will be charged.
@@ -26,17 +21,20 @@ class EnergyBase(object):
         :return: None
         """
         start = rospy.get_rostime().secs
-        finish_time = start + charge_duration
-        while rospy.get_rostime().secs < finish_time:
-            self.energy += 0.00001
+        if charge_till:
+            while self.energy < charge_till:
+                self.energy += 0.00001
+        else:
+            finish_time = start + charge_duration
+            while rospy.get_rostime().secs < finish_time:
+                self.energy += 0.00001
 
     def losing_energy(self, discharge_duration):
         """
         This function should simulate how an object
         losses energy (for example, aPad is losing energy
         by charging mussels, but also by moving)
-        :param start_energy:
-        :return:
+        :param discharge_duration: int (duration of discharge in seconds)
         """
         start = rospy.get_rostime().secs
         finish_time = start + discharge_duration
@@ -80,7 +78,7 @@ class aPad(EnergyBase):
         """
         print("Energy of mussel before charging: {}".format(mussel_instance.energy))
         self.mussels_charging.append(mussel_instance)
-        mussel_instance.charge(5)
+        mussel_instance.charge(5, charge_till_percentage=True)
         print("Energy of mussel after charging: {}".format(mussel_instance.energy))
 
 
@@ -89,6 +87,5 @@ if __name__ == '__main__':
     my_pad = aPad(10)
     rospy.init_node('arm_to_pos', anonymous=True)
     time = rospy.Time().now()
-    print(time)
     my_pad.add_mussel_to_charge(my_mussel)
 
