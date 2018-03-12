@@ -26,14 +26,22 @@ class Topology(object):
         mussels_y = [item.coordinates[1] for item in self.mussels]
         area = numpy.pi * (15 * 1) ** 2  # 0 to 15 point radii
         N = len(self.mussels)
-        plt.scatter(mussels_x, mussels_y, s=area, alpha=0.5, label="Mussels")
+
+        fig, ax = plt.subplots()
+        ax.scatter(mussels_x, mussels_y, s=area, alpha=0.5, c="r", label="Mussels")
 
         pads_x = [item.coordinates[0] for item in self.pads]
         pads_y = [item.coordinates[1] for item in self.pads]
         area = numpy.pi * (15 * 1) ** 2  # 0 to 15 point radii
         N = len(self.pads)
-        plt.scatter(pads_x, pads_y, s=area, alpha=0.5, label="Pads")
+        ax.scatter(pads_x, pads_y, s=area, alpha=0.5, c="b", label="Pads")
         plt.legend()
+
+        for (i, mussel) in enumerate(self.mussels):
+            ax.annotate(str(mussel.energy), (mussels_x[i] + 0.05, mussels_y[i] + 0.05))
+
+        for (i, apad) in enumerate(self.pads):
+            ax.annotate(str(apad.energy), (pads_x[i] + 0.05, pads_y[i] + 0.05))
 
         plt.grid()
         plt.show()
