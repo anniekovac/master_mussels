@@ -17,14 +17,22 @@ def parser():
         agents = []
         for line in init:
             line.rstrip(os.linesep)
-            agent, energy = line.split(":")
-            energy = float(energy)
-            if agent == "amussel":
-                agents.append(data_structures.aMussel(energy))
-            elif agent == "apad":
-                agents.append(data_structures.aPad(energy))
-            elif agent == "deltat":
-                deltat = energy
+            if "deltat" in line:
+                deltat = float(line.split(":")[-1])
+            else:
+                agent, data = line.split(":")
+                energy, x, y = data.split(",")
+                energy = float(energy)
+                x = float(x)
+                y = float(y)
+                if agent == "amussel":
+                    new_mussel = data_structures.aMussel(energy)
+                    new_mussel.coordinates = (x, y)
+                    agents.append(new_mussel)
+                elif agent == "apad":
+                    new_apad = data_structures.aPad(energy)
+                    new_apad.coordinates = (x, y)
+                    agents.append(new_apad)
 
     system = topology.Topology()
     system.all_agents = agents
@@ -40,6 +48,7 @@ def parser():
 # TODO : main function where update_energy is called
 if __name__ == '__main__':
     system = parser()
+    system.plot_topology()
     frequency = 1.0/system.deltat
     rospy.init_node('system', anonymous=True)
     r = rospy.Rate(frequency)  # 1 Hz
