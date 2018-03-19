@@ -1,6 +1,7 @@
 import data_structures
 import rospy
 import matplotlib.pyplot as plt
+import pylab
 import numpy
 
 
@@ -18,7 +19,10 @@ def plot_energy(energy, time, title="Energy of certain agent"):
     time = new_time
 
     # plotting
-    plt.plot(numpy.array(time), numpy.array(energy))
+    plt.plot(numpy.array(time), numpy.array(energy), linewidth=2.0)
+    ax = plt.subplot(111)
+    ax.set_xlim(0, time[-1])
+    ax.set_ylim(0, 110)
     plt.title(title)
     plt.xlabel("Time (hours)")
     plt.ylabel("Energy (percent)")
