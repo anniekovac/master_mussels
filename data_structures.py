@@ -1,27 +1,13 @@
 import rospy
 
-mussel_working_modes = ["sleep", "normal", "camera", "motors", "charging"]
-apad_working_modes = ["motors", "charging_self", "charging_mussels", "sleep"]
-
-# how much energy mussel loses during certain activity (percentage/half an hour)
-mussel_mode_percentages = {"sleep": -1,
-                           "normal": -3,
-                           "camera": -5,
-                           "motors": -10,
-                           "charging": 1}
-
-# how much energy mussel loses during certain activity
-apad_mode_percentages = {"sleep": -1,
-                         "charging_mussels": -2,  # for each mussel
-                         "charging_self": 1,
-                         "motors": -7}
-
 charge_till = 90
 
 
 class EnergyBase(object):
     def __init__(self, energy):
         self.energy = energy
+        self.working_modes = []
+        self.mode_percentages = dict()
 
     def update_energy(self, deltat, working_mode):
         """
@@ -29,42 +15,9 @@ class EnergyBase(object):
         during certain deltaT and certain working state of
         aMussels and aPad.
         """
-        if isinstance(self, aPad):
-            self.energy = self.energy + deltat * apad_mode_percentages[working_mode]
-        elif isinstance(self, aMussel):
-            self.energy = self.energy + deltat * mussel_mode_percentages[working_mode]
-
-    def charge(self, charge_duration, charge_till_percentage = False):
-        """
-        This function should simulate how
-        object will be charged.
-        :param charge_duration: int (for how many seconds mussel will be charged)
-        :param charge_till_percentage: boolean (if you want to charge the mussel till certain percentage)
-        """
-        start = rospy.get_rostime().secs
-        if charge_till:
-            while self.energy < charge_till:
-                self.energy += 0.00001
-            charge_duration = rospy.get_rostime().secs - start
-            return charge_duration 
-        else:
-            finish_time = start + charge_duration
-            while rospy.get_rostime().secs < finish_time:
-                self.energy += 0.00001
-
-    def losing_energy(self, discharge_duration):
-        """
-        This function should simulate how an object
-        losses energy (for example, aPad is losing energy
-        by charging mussels, but also by moving)
-        :param discharge_duration: int (duration of discharge in seconds)
-        """
-        print("aPad energy before discharge: {}".format(self.energy))
-        start = rospy.get_rostime().secs
-        finish_time = start + discharge_duration
-        while rospy.get_rostime().secs < finish_time:
-            self.energy -= 0.00001
-        print("aPad energy after discharge: {}".format(self.energy))
+        if self.energy == 100.0:
+            return
+        self.energy = self.energy + deltat * self.mode_percentages[working_mode]
 
 
 class aMussel(EnergyBase):
@@ -79,6 +32,15 @@ class aMussel(EnergyBase):
         :param on_surface: boolean (if mussel is on surface, True, else False)
         """
         super(aMussel, self).__init__(energy)
+        self.working_modes = ["sleep", "normal", "camera", "motors", "charging"]
+
+        # how much energy mussel loses (or gains) during certain activity (percentage/half an hour)
+        self.mode_percentages = {"sleep": -1,
+                                   "normal": -3,
+                                   "camera": -5,
+                                   "motors": -10,
+                                   "charging": 1}
+
         self.working_mode = [working_mode]
         self.coordinates = (None, None)
         self.set_of_events = []
@@ -91,6 +53,14 @@ class aMussel(EnergyBase):
 class aPad(EnergyBase):
     def __init__(self, energy, working_mode="charging_self"):
         super(aPad, self).__init__(energy)
+        self.working_modes = ["motors", "charging_self", "charging_mussels", "sleep"]
+
+        # how much energy aPad loses (or gains) during certain activity
+        self.mode_percentages =  {"sleep": -1,
+                                 "charging_mussels": -2,  # for each mussel
+                                 "charging_self": 1,
+                                 "motors": -7}
+
         self.mussels_charging = []
         self.working_mode = [working_mode]
         self.coordinates = (None, None)
@@ -103,9 +73,7 @@ class aPad(EnergyBase):
         """
         print("Energy of mussel before charging: {}".format(mussel_instance.energy))
         self.mussels_charging.append(mussel_instance)
-        charge_dur = mussel_instance.charge(5, charge_till_percentage=True)
-        if charge_dur:
-            self.losing_energy(charge_dur)
+        self.working_mode.append("charging_mussel")
         print("Energy of mussel after charging: {}".format(mussel_instance.energy))
 
 
