@@ -5,11 +5,11 @@ import pylab
 import numpy
 
 
-def plot_energy(energy, time, title="Energy of certain agent"):
+def plot_energy(energy_list, time, title="Energy of certain agent", labels=[]):
     """
     PLotting energy of an agent. For now, one second in "our time" is
     represented as 30 minutes of simulated time.
-    :param energy: array
+    :param energy_list: array (can be list of lists, if you want to plot energy of multiple agents)
     :param time: array
     """
     # turning seconds into half an hour
@@ -19,14 +19,24 @@ def plot_energy(energy, time, title="Energy of certain agent"):
         new_time.append((sec-first_second) * 0.5)
     time = new_time
 
-    # plotting
-    plt.plot(numpy.array(time), numpy.array(energy), linewidth=2.0)
-    ax = plt.subplot(111)
-    ax.set_xlim(0, time[-1])
-    ax.set_ylim(0, 110)
-    plt.title(title)
-    plt.xlabel("Time (hours)")
-    plt.ylabel("Energy (percent)")
+    if any(isinstance(el, list) for el in energy_list):  # if there are multiple agents' energy
+        if not labels:  # and labels are not defined
+            for idx, item in enumerate(energy_list):  # define labels by agents' indexes
+                labels.append("Agent {}".format(idx))
+    else:
+        energy_list = [energy_list]  # if there aren't multiple agents' energy
+
+    for idx, energy in enumerate(energy_list):
+        # plotting
+        plt.plot(numpy.array(time), numpy.array(energy), linewidth=2.0, label=labels[idx])
+        ax = plt.subplot(111)
+        ax.set_xlim(0, time[-1])
+        ax.set_ylim(0, 110)
+        plt.title(title)
+        plt.xlabel("Time (hours)")
+        plt.ylabel("Energy (percent)")
+
+    plt.legend()
     plt.grid()
     plt.show()
 
@@ -82,7 +92,55 @@ def scenario2():
     plot_energy(energy, time, "Energy of amussel in scenario 2")
 
 
+def scenario3():
+    """
+    There is one mussel and one apad in topology.
+    """
+    deltat = 1
+    r = rospy.Rate(1/deltat)
+
+    # initializing agents
+    amussel = data_structures.aMussel(27)
+    apad = data_structures.aPad(98)
+
+    # initializing modes of work and how long they last
+    mussel_modes = [("charging", 14)]
+    apad_modes = [(["charging_self", "charging_mussels"], 14)]
+
+    # initializing empty arrays for plot
+    mussel_energy = []
+    apad_energy = []
+    time = []
+    for apad_mode, mussel_mode in zip(apad_modes, mussel_modes):
+        start_mode = rospy.get_rostime().secs
+        while not rospy.is_shutdown():
+            if rospy.get_rostime().secs - start_mode >= apad_mode[1]:  # if "mode time" passed - if charging is finished
+                break
+
+            # setting agents working mode
+            amussel.working_mode = [mussel_mode[0]]
+            apad.working_mode = apad_mode[0]
+
+            # adding energies to curves
+            mussel_energy.append(amussel.energy)
+            apad_energy.append(apad.energy)
+            time.append(rospy.get_rostime().secs)
+
+            # updating energy of agents
+            amussel.update_energy(deltat)
+            apad.update_energy(deltat)
+
+            # time check - this cannot last forever :'(
+            if len(time) > 10:
+                break
+
+            r.sleep()
+
+    # plot
+    plot_energy([mussel_energy, apad_energy], time, "Energy of apad and amussel in scenario 3", labels=["Mussel", "Pad"])
+
+
 if __name__ == '__main__':
     rospy.init_node('arm_to_pos', anonymous=True)
     time = rospy.Time().now()
-    scenario2()
+    scenario3()
