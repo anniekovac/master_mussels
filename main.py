@@ -43,9 +43,10 @@ def parser():
     return system
 
 
-# TODO : add coordinates in init
 # TODO : think of the smarter init structure
-# TODO : main function where update_energy is called
+# TODO : add efficiency of charging in some way (percentage?)
+# TODO : changes in code neccessary for one aPad charging multiple aMussels
+# TODO : add a scenario where one aPad charges multiple aMussels
 if __name__ == '__main__':
     system = parser()
     system.plot_topology()
