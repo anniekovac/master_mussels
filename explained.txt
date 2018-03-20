@@ -16,7 +16,6 @@ aPad working modes explained:
 data_structures.py
 
 EnergyBase
-
 - this is base class for every agent
 - property "self.energy" is used for describing how many percent of energy this agent has left
 - property "self.working_modes" is a list which contains every possible working mode
@@ -26,8 +25,15 @@ EnergyBase
     this change of time depends on working mode that agent containts in that exact moment
 
 aMussel
-
 - this is a class created specifically for aMussel agents
 - in __init__() method, working modes for aMussel specifically are defined, as well as mode_percentages (these properties 
     are defined in EnergyBase class)
 - if optional argument working_mode is given, in __init__() method, property "self.working_mode" is initialized
+
+aPad
+- this is a class created specifically for aPad agents
+- in __init__() method, properties "self.working_modes" and "self.mode_percentages" are defined
+- property "self.mussels_charging" is a list that contains all the mussels that are charging in some specific moment (this list
+    should contain aMussel() class instances)
+- property "self.coordinates" is used for x, y coordinates of aPad agent
+
