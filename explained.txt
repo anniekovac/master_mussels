@@ -24,3 +24,10 @@ EnergyBase
     percentages of energy agent gains or loses during certain working mode)
 - method "self.update_energy()" is used to calculate new agents' energy, after certain period of time (deltat) - 
     this change of time depends on working mode that agent containts in that exact moment
+
+aMussel
+
+- this is a class created specifically for aMussel agents
+- in __init__() method, working modes for aMussel specifically are defined, as well as mode_percentages (these properties 
+    are defined in EnergyBase class)
+- if optional argument working_mode is given, in __init__() method, property "self.working_mode" is initialized
