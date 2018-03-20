@@ -13,7 +13,14 @@ aPad working modes explained:
 - charging_mussels : when at least one aMussel is being charged by aPad
 - sleep : when nothing is happening (aPad is not even charging - night?)
 
-Charging
-There are two "ways" of using charge() method:
-- with charge_duration argument: mussel will be charged for charge_duration seconds
-- with charge_till_percentage optional argument: mussel will be charged till certain percentage
+data_structures.py
+
+EnergyBase
+
+- this is base class for every agent
+- property "self.energy" is used for describing how many percent of energy this agent has left
+- property "self.working_modes" is a list which contains every possible working mode
+- property "self.mode_percentages" is a dictionary which contains keys (working modes) and values (how many
+    percentages of energy agent gains or loses during certain working mode)
+- method "self.update_energy()" is used to calculate new agents' energy, after certain period of time (deltat) - 
+    this change of time depends on working mode that agent containts in that exact moment
