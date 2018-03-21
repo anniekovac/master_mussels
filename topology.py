@@ -25,15 +25,13 @@ class Topology(object):
         mussels_x = [item.coordinates[0] for item in self.mussels]
         mussels_y = [item.coordinates[1] for item in self.mussels]
         area = numpy.pi * (15 * 1) ** 2  # 0 to 15 point radii
-        N = len(self.mussels)
 
         fig, ax = plt.subplots()
         ax.scatter(mussels_x, mussels_y, s=area, alpha=0.5, c="r", label="Mussels")
 
         pads_x = [item.coordinates[0] for item in self.pads]
         pads_y = [item.coordinates[1] for item in self.pads]
-        area = numpy.pi * (15 * 1) ** 2  # 0 to 15 point radii
-        N = len(self.pads)
+        area = numpy.pi * (15 * 1) ** 2
         ax.scatter(pads_x, pads_y, s=area, alpha=0.5, c="b", label="Pads")
         plt.legend()
 

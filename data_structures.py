@@ -6,10 +6,11 @@ charge_till = 90
 class EnergyBase(object):
     def __init__(self, energy):
         self.energy = energy
+        # please, keep in mind that self.working_modes property is a LIST!
         self.working_modes = []
         self.mode_percentages = dict()
 
-    def update_energy(self, deltat, working_mode):
+    def update_energy(self, deltat):
         """
         This function should calculate change of energy
         during certain deltaT and certain working state of
@@ -17,7 +18,8 @@ class EnergyBase(object):
         """
         if self.energy == 100.0:
             return
-        self.energy = self.energy + deltat * self.mode_percentages[working_mode]
+        for working_mode in self.working_mode:
+            self.energy = self.energy + deltat * self.mode_percentages[working_mode]
 
 
 class aMussel(EnergyBase):

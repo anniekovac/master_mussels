@@ -47,9 +47,11 @@ def parser():
 # TODO : add efficiency of charging in some way (percentage?)
 # TODO : changes in code neccessary for one aPad charging multiple aMussels
 # TODO : add a scenario where one aPad charges multiple aMussels
+# TODO : create some kind of visual representation (how to distinguish when mussels
+# todo : beneath water surface and on the surface, etc
 if __name__ == '__main__':
     system = parser()
-    system.plot_topology()
+    # system.plot_topology()
     frequency = 1.0/system.deltat
     rospy.init_node('system', anonymous=True)
     r = rospy.Rate(frequency)  # 1 Hz
