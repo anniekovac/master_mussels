@@ -21,7 +21,8 @@ class EnergyBase(object):
         for working_mode in self.working_mode:
             self.energy = self.energy + deltat * self.mode_percentages[working_mode]
 
-
+# total energy = 5000 mAh
+# active mode = -100mAh
 class aMussel(EnergyBase):
     def __init__(self, energy, working_mode=None):
         """
@@ -37,11 +38,11 @@ class aMussel(EnergyBase):
         self.working_modes = ["sleep", "normal", "camera", "motors", "charging"]
 
         # how much energy mussel loses (or gains) during certain activity (percentage/half an hour)
-        self.mode_percentages = {"sleep": -1,
-                                   "normal": -3,
-                                   "camera": -5,
-                                   "motors": -10,
-                                   "charging": 1}
+        self.mode_percentages = {"sleep": -0.0003,
+                                   "normal": -0.01,
+                                   "camera": -0.04,
+                                   "motors": -0.015,
+                                   "charging": 0.02}
 
         self.working_mode = [working_mode]
         self.coordinates = (None, None)
