@@ -18,8 +18,14 @@ class EnergyBase(object):
         """
         if self.energy == 100.0:
             return
+        change_of_energy = 0
         for working_mode in self.working_mode:
-            self.energy = self.energy + deltat * self.mode_percentages[working_mode]
+            change_of_energy += deltat * self.mode_percentages[working_mode]
+        if self.energy + change_of_energy > 100.0:
+            return
+        else:
+            self.energy = self.energy + change_of_energy
+
 
 # total energy = 5000 mAh
 # active mode = -100mAh
@@ -42,7 +48,7 @@ class aMussel(EnergyBase):
                                    "normal": -0.01,
                                    "camera": -0.04,
                                    "motors": -0.015,
-                                   "charging": 0.02}
+                                   "charging": 2}
 
         self.working_mode = [working_mode]
         self.coordinates = (None, None)
@@ -59,10 +65,10 @@ class aPad(EnergyBase):
         self.working_modes = ["motors", "charging_self", "charging_mussels", "sleep"]
 
         # how much energy aPad loses (or gains) during certain activity
-        self.mode_percentages =  {"sleep": -1,
-                                 "charging_mussels": -2,  # for each mussel
-                                 "charging_self": 1,
-                                 "motors": -7}
+        self.mode_percentages =  {"sleep": -0.0003,
+                                 "charging_mussels": -0.02,  # for each apad
+                                 "charging_self": 0.08,
+                                 "motors": -0.02}
 
         self.mussels_charging = []
         self.working_mode = [working_mode]
