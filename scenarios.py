@@ -1,44 +1,6 @@
 import data_structures
 import rospy
-import matplotlib.pyplot as plt
-import pylab
-import numpy
-
-
-def plot_energy(energy_list, time, title="Energy of certain agent", labels=[]):
-    """
-    PLotting energy of an agent. For now, one second in "our time" is
-    represented as 30 minutes of simulated time.
-    :param energy_list: array (can be list of lists, if you want to plot energy of multiple agents)
-    :param time: array
-    """
-    # turning seconds into half an hour
-    new_time = []
-    first_second = time[0]
-    for sec in time:
-        new_time.append((sec-first_second) * 0.5)
-    time = new_time
-
-    if any(isinstance(el, list) for el in energy_list):  # if there are multiple agents' energy
-        if not labels:  # and labels are not defined
-            for idx, item in enumerate(energy_list):  # define labels by agents' indexes
-                labels.append("Agent {}".format(idx))
-    else:
-        energy_list = [energy_list]  # if there aren't multiple agents' energy
-
-    for idx, energy in enumerate(energy_list):
-        # plotting
-        plt.plot(numpy.array(time), numpy.array(energy), linewidth=2.0, label=labels[idx])
-        ax = plt.subplot(111)
-        ax.set_xlim(0, time[-1])
-        ax.set_ylim(0, 110)
-        plt.title(title)
-        plt.xlabel("Time (hours)")
-        plt.ylabel("Energy (percent)")
-
-    plt.legend()
-    plt.grid()
-    plt.show()
+from util import plot_energy
 
 
 def scenario1():
@@ -72,7 +34,7 @@ def scenario2():
     r = rospy.Rate(1/deltat)
 
     amussel = data_structures.aMussel(98)
-    modes = [("camera", 7), ("sleep", 2), ("charging", 6), ("camera", 8), ("normal", 6)]
+    modes = [("camera", 15), ("sleep", 6), ("camera", 8), ("charging", 6), ("normal", 6)]
 
     energy = []
     time = []
@@ -89,7 +51,7 @@ def scenario2():
             if len(energy) > 100:
                 break
             r.sleep()
-    plot_energy(energy, time, "Energy of amussel in scenario 2")
+    plot_energy(energy, time, "Energy of amussel in scenario 2", labels=["Mussel"])
 
 
 def scenario3():
@@ -191,8 +153,7 @@ def scenario4():
     plot_energy([mussel_energy, apad_energy], time, "Energy of apad and amussel in scenario 3", labels=["Mussel", "Pad"])
 
 
-
 if __name__ == '__main__':
-    rospy.init_node('arm_to_pos', anonymous=True)
+    rospy.init_node('topology', anonymous=True)
     time = rospy.Time().now()
-    scenario3()
+    scenario2()
