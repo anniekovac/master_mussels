@@ -23,7 +23,33 @@ def scenario1():
         if len(energy) > 100:
             break
         r.sleep()
-    plot_energy(energy, time, "Energy of an apad in scenario 1 - just charging")
+    plot_energy(energy, time, "Energy of an apad in scenario 1 - just charging", labels=["aPad"])
+
+
+def scenario_mussel_charging():
+    """
+    There is one mussel in topology.
+    """
+    deltat = 1
+    r = rospy.Rate(1/deltat)
+
+    amussel = data_structures.aMussel(2)
+    modes = [("charging", 60)]
+
+    energy = []
+    time = []
+    for mode, mode_time in modes:
+        start_mode = rospy.get_rostime().secs
+        while not rospy.is_shutdown():
+            if rospy.get_rostime().secs - start_mode >= mode_time:
+                break
+            amussel.working_mode = [mode]
+            energy.append(amussel.energy)
+            time.append(rospy.get_rostime().secs)
+            amussel.update_energy(deltat)
+            print(amussel.energy)
+            r.sleep()
+    plot_energy(energy, time, "Energy of amussel in scenario 2", labels=["Mussel"])
 
 
 def scenario2():
@@ -156,4 +182,4 @@ def scenario4():
 if __name__ == '__main__':
     rospy.init_node('topology', anonymous=True)
     time = rospy.Time().now()
-    scenario2()
+    scenario_mussel_charging()
