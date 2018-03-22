@@ -14,14 +14,17 @@ class EnergyBase(object):
         """
         This function should calculate change of energy
         during certain deltaT and certain working state of
-        aMussels and aPad.
+        aMussels and aPad. If energy is already 100 percent, 
+        or if it would be larger than 100 percent or smaller than 0
+        percent by adding change
+        of energy that is calculated, energy doesn't change.
         """
         if self.energy == 100.0:
             return
         change_of_energy = 0
         for working_mode in self.working_mode:
             change_of_energy += deltat * self.mode_percentages[working_mode]
-        if self.energy + change_of_energy > 100.0:
+        if (self.energy + change_of_energy > 100.0) or (self.energy + change_of_energy < 0):
             return
         else:
             self.energy = self.energy + change_of_energy
