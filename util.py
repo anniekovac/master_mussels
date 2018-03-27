@@ -79,14 +79,11 @@ def plot_energy(energy_list, time, title="Energy of certain agent", labels=[], a
         #ax.set_ylim(min(energy), max(energy)+0.5)
         ax.set_ylim(0, 100)
 
-        #if annotate:
-        for ann_instance in annotate:
-            ann_instance.coordinates = (ann_instance.coordinates[0] - first_second, ann_instance.coordinates[1])
-            text_coor = ann_instance.coordinates
-            print(ann_instance.coordinates)
-            print(text_coor)
-            plt.annotate(ann_instance.text, xy=ann_instance.coordinates) #, xytext=text_coor),
-                            #arrowprops=dict(facecolor='black', shrink=0.05),)
+        if annotate:
+            for ann_instance in annotate:
+                ann_instance.coordinates = ((ann_instance.coordinates[0] - first_second)*0.5, ann_instance.coordinates[1])
+                plt.annotate(ann_instance.text, xy=ann_instance.coordinates)
+
         plt.title(title)
         plt.xlabel("Time (hours)")
         plt.ylabel("Energy (percent)")
