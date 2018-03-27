@@ -1,6 +1,6 @@
 import data_structures
 import rospy
-from util import plot_energy
+from util import plot_energy, Annotate
 
 
 def scenario1():
@@ -64,8 +64,10 @@ def scenario2():
 
     energy = []
     time = []
+    annotate = []
     for mode, mode_time in modes:
         start_mode = rospy.get_rostime().secs
+        annotate.append(Annotate(mode, (start_mode, amussel.energy)))
         while not rospy.is_shutdown():
             if rospy.get_rostime().secs - start_mode >= mode_time:
                 break
@@ -77,7 +79,7 @@ def scenario2():
             if len(energy) > 100:
                 break
             r.sleep()
-    plot_energy(energy, time, "Energy of amussel in scenario 2", labels=["Mussel"])
+    plot_energy(energy, time, "Energy of amussel in scenario 2", labels=["Mussel"], annotate=annotate)
 
 
 def scenario3():
@@ -176,4 +178,4 @@ def scenario4():
 if __name__ == '__main__':
     rospy.init_node('topology', anonymous=True)
     time = rospy.Time().now()
-    scenario3()
+    scenario2()

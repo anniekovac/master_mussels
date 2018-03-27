@@ -5,6 +5,12 @@ import matplotlib.pyplot as plt
 import numpy
 
 
+class Annotate(object):
+    def __init__(self, text, coordinates):
+        self.text = text
+        self.coordinates = coordinates
+
+
 def parser():
     """
     Function created for parsing init file.
@@ -44,7 +50,7 @@ def parser():
     return system
 
 
-def plot_energy(energy_list, time, title="Energy of certain agent", labels=[]):
+def plot_energy(energy_list, time, title="Energy of certain agent", labels=[], annotate=[]):
     """
     PLotting energy of an agent. For now, one second in "our time" is
     represented as 30 minutes of simulated time.
@@ -72,6 +78,15 @@ def plot_energy(energy_list, time, title="Energy of certain agent", labels=[]):
         ax.set_xlim(0, time[-1])
         #ax.set_ylim(min(energy), max(energy)+0.5)
         ax.set_ylim(0, 100)
+
+        #if annotate:
+        for ann_instance in annotate:
+            ann_instance.coordinates = (ann_instance.coordinates[0] - first_second, ann_instance.coordinates[1])
+            text_coor = ann_instance.coordinates
+            print(ann_instance.coordinates)
+            print(text_coor)
+            plt.annotate(ann_instance.text, xy=ann_instance.coordinates) #, xytext=text_coor),
+                            #arrowprops=dict(facecolor='black', shrink=0.05),)
         plt.title(title)
         plt.xlabel("Time (hours)")
         plt.ylabel("Energy (percent)")
