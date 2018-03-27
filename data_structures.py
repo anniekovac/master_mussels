@@ -47,10 +47,10 @@ class aMussel(EnergyBase):
         self.working_modes = ["sleep", "normal", "camera", "motors", "charging"]
 
         # how much energy mussel loses (or gains) during certain activity (percentage/half an hour)
-        self.mode_percentages = {"sleep": -0.0003,
-                                   "normal": -0.01,
-                                   "camera": -0.04,
-                                   "motors": -0.015,
+        self.mode_percentages = {"sleep": -0.3,
+                                   "normal": -1,
+                                   "camera": -4,
+                                   "motors": -15,
                                    "charging": 2}
 
         self.working_mode = [working_mode]
@@ -68,10 +68,10 @@ class aPad(EnergyBase):
         self.working_modes = ["motors", "charging_self", "charging_mussels", "sleep"]
 
         # how much energy aPad loses (or gains) during certain activity
-        self.mode_percentages =  {"sleep": -0.0003,
-                                 "charging_mussels": -0.02,  # for each apad
-                                 "charging_self": 0.08,
-                                 "motors": -0.02}
+        self.mode_percentages =  {"sleep": -0.3,
+                                 "charging_mussels": -2,  # for each apad
+                                 "charging_self": 4,
+                                 "motors": -4}
 
         self.mussels_charging = []
         self.working_mode = [working_mode]

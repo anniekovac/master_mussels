@@ -93,8 +93,8 @@ def scenario3():
     apad = data_structures.aPad(98)
 
     # initializing modes of work and how long they last
-    mussel_modes = [("charging", 14)]
-    apad_modes = [(["charging_self", "charging_mussels"], 14)]
+    mussel_modes = [("charging", 5)]
+    apad_modes = [(["charging_mussels"], 5)]
 
     # initializing empty arrays for plot
     mussel_energy = []
@@ -118,10 +118,6 @@ def scenario3():
             # updating energy of agents
             amussel.update_energy(deltat)
             apad.update_energy(deltat)
-
-            # time check - this cannot last forever :'(
-            if len(time) > 10:
-                break
 
             r.sleep()
 
@@ -170,8 +166,6 @@ def scenario4():
             apad.update_energy(deltat)
 
             # time check - this cannot last forever :'(
-            if len(time) > 10:
-                break
 
             r.sleep()
 
@@ -182,4 +176,4 @@ def scenario4():
 if __name__ == '__main__':
     rospy.init_node('topology', anonymous=True)
     time = rospy.Time().now()
-    scenario_mussel_charging()
+    scenario3()
