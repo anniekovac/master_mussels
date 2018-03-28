@@ -23,7 +23,11 @@ class EnergyBase(object):
             return
         change_of_energy = 0
         for working_mode in self.working_mode:
-            change_of_energy += deltat * self.mode_percentages[working_mode]
+            if working_mode == "charging_mussels":
+                for mussel in self.mussels_charging:
+                    change_of_energy += deltat * self.mode_percentages[working_mode]
+            else:
+                change_of_energy += deltat * self.mode_percentages[working_mode]
         if (self.energy + change_of_energy > 100.0) or (self.energy + change_of_energy < 0):
             return
         else:
@@ -70,7 +74,7 @@ class aPad(EnergyBase):
         # how much energy aPad loses (or gains) during certain activity
         self.mode_percentages =  {"sleep": -0.3,
                                  "charging_mussels": -2,  # for each apad
-                                 "charging_self": 4,
+                                 "charging_self": 3,
                                  "motors": -4}
 
         self.mussels_charging = []
