@@ -55,6 +55,20 @@ def parser():
     return system
 
 
+def convert_time(time):
+    """
+    Converting time: every second of "our time"
+    is represented as 30 minutes of simulated time.
+    @time : array (list)
+    :return: array (list)
+    """
+    new_time = []
+    first_second = time[0]
+    for sec in time:
+        new_time.append((sec-first_second) * 0.5)
+    return new_time   
+
+
 def plot_energy(energy_list, time, title="Energy of certain agent", labels=[], annotate=[]):
     """
     PLotting energy of an agent. For now, one second in "our time" is
@@ -63,12 +77,7 @@ def plot_energy(energy_list, time, title="Energy of certain agent", labels=[], a
     :param time: array
     """
     # turning seconds into half an hour
-    # TODO : more elegant way of converting seconds ? small function?
-    new_time = []
-    first_second = time[0]
-    for sec in time:
-        new_time.append((sec-first_second) * 0.5)
-    time = new_time
+    time = convert_time(time)
 
     if any(isinstance(el, list) for el in energy_list):  # if there are multiple agents' energy
         if not labels:  # and labels are not defined
@@ -90,7 +99,7 @@ def plot_energy(energy_list, time, title="Energy of certain agent", labels=[], a
                 # ann_instance includes:
                 # ann_instance.coordinates = (time, energy)
                 # ann_instance.text = working_mode which begins in time
-                ann_instance.coordinates = ((ann_instance.coordinates[0] - first_second)*0.5, ann_instance.coordinates[1])  # converting seconds
+                ann_instance.coordinates = ((convert_time([ann_instance.coordinates[0]][0]) - first_second)*0.5, ann_instance.coordinates[1])  # converting seconds
                 plt.annotate(ann_instance.text, xy=ann_instance.coordinates)
 
         plt.title(title)
