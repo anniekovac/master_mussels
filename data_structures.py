@@ -23,9 +23,9 @@ class EnergyBase(object):
             return
         change_of_energy = 0
         for working_mode in self.working_mode:
-            if working_mode == "charging_mussels":
-                for mussel in self.mussels_charging:
-                    change_of_energy += deltat * self.mode_percentages[working_mode]
+            if working_mode == "charging_mussels":  # if aPad is charging mussels
+                for mussel in self.mussels_charging:  # for each mussel that is being charged
+                    change_of_energy += deltat * self.mode_percentages[working_mode]  # add change of energy
             else:
                 change_of_energy += deltat * self.mode_percentages[working_mode]
         if (self.energy + change_of_energy > 100.0) or (self.energy + change_of_energy < 0):
