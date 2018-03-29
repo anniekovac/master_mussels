@@ -7,6 +7,11 @@ import numpy
 
 class Annotate(object):
     def __init__(self, text, coordinates):
+        """
+        Simple class used for annotating text. 
+        @text : str (working mode which starts in this time)
+        @coordinates : tuple of floats (time, energy) - where the text is placed
+        """
         self.text = text
         self.coordinates = coordinates
 
@@ -79,8 +84,11 @@ def plot_energy(energy_list, time, title="Energy of certain agent", labels=[], a
         #ax.set_ylim(min(energy), max(energy)+0.5)
         ax.set_ylim(0, 100)
 
-        if annotate:
-            for ann_instance in annotate:
+        if annotate:  # if annotate argument exists in function calling
+            for ann_instance in annotate:  # for every instance of annotate
+                # ann_instance includes:
+                # ann_instance.coordinates = (time, energy)
+                # ann_instance.text = working_mode which begins in time
                 ann_instance.coordinates = ((ann_instance.coordinates[0] - first_second)*0.5, ann_instance.coordinates[1])
                 plt.annotate(ann_instance.text, xy=ann_instance.coordinates)
 
