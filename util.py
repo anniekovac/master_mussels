@@ -63,6 +63,7 @@ def plot_energy(energy_list, time, title="Energy of certain agent", labels=[], a
     :param time: array
     """
     # turning seconds into half an hour
+    # TODO : more elegant way of converting seconds ? small function?
     new_time = []
     first_second = time[0]
     for sec in time:
@@ -89,7 +90,7 @@ def plot_energy(energy_list, time, title="Energy of certain agent", labels=[], a
                 # ann_instance includes:
                 # ann_instance.coordinates = (time, energy)
                 # ann_instance.text = working_mode which begins in time
-                ann_instance.coordinates = ((ann_instance.coordinates[0] - first_second)*0.5, ann_instance.coordinates[1])
+                ann_instance.coordinates = ((ann_instance.coordinates[0] - first_second)*0.5, ann_instance.coordinates[1])  # converting seconds
                 plt.annotate(ann_instance.text, xy=ann_instance.coordinates)
 
         plt.title(title)
