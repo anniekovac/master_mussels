@@ -13,7 +13,10 @@ aPad working modes explained:
 - charging_mussels : when at least one aMussel is being charged by aPad
 - sleep : when nothing is happening (aPad is not even charging - night?)
 
-data_structures.py
+-----------------------------------------------------------------------------------------------------------------------------
+FILES EXPLAINED:
+
+****data_structures.py
 
 EnergyBase
 - this is base class for every agent
@@ -37,3 +40,17 @@ aPad
     should contain aMussel() class instances)
 - property "self.coordinates" is used for x, y coordinates of aPad agent
 
+
+****init.txt
+
+This is the file where agents are initialized. So if you want an easy way to add some agents to topology, you can add them 
+to init.txt file with desired coordinates and energies and run the simulation from there. Parser for init file is placed in 
+util.py, function parser().
+
+Convention is this:
+type_of_agent:energy,x_coordinate,y_coordinate
+
+So for example:
+amussel:23,1,0
+
+means that agent is aMussel that in the beginning of simulation has the energy of 23 percent, and is placed in space on coodinated (1, 0).
