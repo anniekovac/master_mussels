@@ -1,17 +1,18 @@
 import data_structures
-import rospy
+import rospy, os
 from util import plot_energy, Annotate, parser
 from std_msgs.msg import String
 
 
 def move_scenario():
     """
-    One simple scenario: one aPad is added
-    and one aMussel. aPad has the energy of 22.
-    aPad is charging, therefore, gaining energy.
+    One apad is added and it should move somewhere.
+    Figure out how times and speed will be calculated. 1 second
+    of our time is 30 minutes in simulation, but speed of apad is 0.5 meters per second.
+    How will we calculate everything??
     """
     deltat = 1
-    topology = parser(filename="init_topo_exmple.txt")
+    topology = parser(filename=os.path.join("..", "init_files", "init_topo_exmple.txt"))
     apad = topology.all_agents[0]
     r = rospy.Rate(1/deltat)  # 1 Hz
     while not rospy.is_shutdown():
