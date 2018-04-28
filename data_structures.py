@@ -10,6 +10,15 @@ class EnergyBase(object):
         self.working_modes = []
         self.mode_percentages = dict()
 
+    def move(self, deltat):
+        """
+        This function should calculate new coordinates that
+        agent has after time deltat.
+        :param deltat: float
+        """
+        pass
+
+
     def update_energy(self, deltat):
         """
         This function should calculate change of energy
