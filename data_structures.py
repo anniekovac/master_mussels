@@ -10,13 +10,19 @@ class EnergyBase(object):
         self.working_modes = []
         self.mode_percentages = dict()
 
-    def move(self, deltat):
+    def move(self, deltat, speed=None, direction=None):
         """
         This function should calculate new coordinates that
         agent has after time deltat.
+        Default speed defined here is also the max speed of the
+        apad (0.5 meters per second).
         :param deltat: float
         """
-        pass
+        # s = v*t
+        if speed == None:
+            speed = 0.5
+        deltas = speed * deltat
+        self.coordinates = (self.coordinates[0] + deltas, self.coordinates[1] + deltas)
 
 
     def update_energy(self, deltat):
