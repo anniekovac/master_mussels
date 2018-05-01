@@ -1,5 +1,6 @@
 from data_structures import aPad, aMussel
-import random, numpy
+import random, numpy, os
+import util
 
 
 class Topology(object):
@@ -46,14 +47,5 @@ class Topology(object):
 
 
 if __name__ == '__main__':
-
-    topology = Topology()
-    mussels = [aMussel(50) for i in range(10)]
-    for mussel in mussels:
-        mussel.coordinates = (random.randint(0, 10), random.randint(0, 10))
-    topology.mussels = mussels
-    pads = [aPad(80) for i in range(2)]
-    for pad in pads:
-        pad.coordinates = (random.randint(0, 10), random.randint(0, 10))
-    topology.pads = pads
+    topology = util.parser(filename=os.path.join(os.getcwd(), "init_files", "init_topo_exmple.txt"))
     topology.plot_topology()

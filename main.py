@@ -20,6 +20,6 @@ if __name__ == '__main__':
         for apad in system.pads:
             if apad.working_mode:
                 print("Energy before update: {}".format(apad.energy))
-                apad.update_energy(deltat=system.deltat, working_mode=apad.working_mode[0])
+                apad.update_energy(deltat=system.deltat) #, working_mode=apad.working_mode[0])
                 print("Energy after update: {}".format(apad.energy))
         r.sleep()

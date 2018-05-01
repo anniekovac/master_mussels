@@ -5,6 +5,19 @@ import matplotlib.pyplot as plt
 import numpy
 
 
+"""
+trenutno ne mogu importati msg koji sam stvorila - otkriti zasto je to tako.
+znaci treba:
+- moci publishati na taj message
+- napraviti da se cita s tog message
+- sastaviti "plan rada" musule
+- pokusati simulirati taj plan rada
+- napraviti grafove za taj plan rada - kretanje musule
+                                     - promjena energije musule
+                                     - promjena energije vise musula + lopoca
+                                     - gif koji prikazuje kretanje musula
+"""
+
 class Annotate(object):
     def __init__(self, text, coordinates):
         """
@@ -16,16 +29,19 @@ class Annotate(object):
         self.coordinates = coordinates
 
 
-def parser():
+def parser(filename=None):
     """
     Function created for parsing init file.
     In init file are written agents and their
     initial states of energy, as well as deltat (this
     is discrete time : how often energies are updated).
 
+    :param: filename : str (name of the init file)
     :return: topology.Topology() class instance
     """
-    with open("init.txt", "r") as init:
+    if filename is None:
+        filename = "init.txt"
+    with open(filename, "r") as init:
         agents = []
         for line in init:
             line.rstrip(os.linesep)
@@ -67,6 +83,20 @@ def convert_time(time):
     for sec in time:
         new_time.append((sec-first_second) * 0.5)
     return new_time   
+
+
+def plot_coordinates(xs, ys, title="How certain agent moved"):
+    """
+    This function should plot coordinates of movement of an agent.
+
+    :param xs: list of floats (x coordinates of an agent)
+    :param ys:  list of floats (y coordinates of an agent)
+    :param title: string
+    """
+    fig, ax = plt.subplots()
+    ax.scatter(numpy.array(xs), numpy.array(ys), alpha=0.5, c="b")
+    plt.grid()
+    plt.show()
 
 
 def plot_energy(energy_list, time, title="Energy of certain agent", labels=[], annotate=[]):

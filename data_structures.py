@@ -15,12 +15,14 @@ class EnergyBase(object):
         This function should calculate new coordinates that
         agent has after time deltat.
         Default speed defined here is also the max speed of the
-        apad (0.5 meters per second).
+        apad (0.5 meters per second = 1.8 km/h = 0.9 km/half an hour).
+        Lets take 0.25 meters per second. = 0.9 km/h = 0.45 km/half an hour
         :param deltat: float
         """
         # s = v*t
         if speed == None:
-            speed = 0.5
+            #speed = 900
+            speed = 450
         deltas = speed * deltat
         self.coordinates = (self.coordinates[0] + deltas, self.coordinates[1] + deltas)
 
