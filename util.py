@@ -96,6 +96,8 @@ def plot_coordinates(xs, ys, title="How certain agent moved"):
     fig, ax = plt.subplots()
     ax.scatter(numpy.array(xs), numpy.array(ys), alpha=0.5, c="b")
     plt.grid()
+    plt.xlabel("X coordinates")
+    plt.ylabel("Y coordinates")
     plt.show()
 
 

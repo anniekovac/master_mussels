@@ -1,7 +1,18 @@
-import data_structures
-import rospy, os
+import rospy, os, sys
 from util import plot_energy, Annotate, parser, plot_coordinates
 from std_msgs.msg import String
+import rospkg
+rospack = rospkg.RosPack()
+# get the file path for rospy_tutorials
+path = rospack.get_path('controller')
+msg_file = "WorkingModes.msg"
+path_to_msg = os.path.join(path, "msg") #, msg_file)
+print(path_to_msg)
+sys.path.append(path_to_msg)
+import WorkingModes
+import imp
+foo = imp.load_source(path_to_msg, "WorkingModes.msg")
+from foo import WorkingModes
 
 
 def move_scenario():
