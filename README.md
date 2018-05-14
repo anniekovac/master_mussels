@@ -8,6 +8,7 @@ master_mussels
 ├── data_structures.py - definition of agents' classes
 ├── main.py - contains parser for init file, small scenario
 ├── topology.py - Topology class, 2D plot of agents in x-y coordinates
+├── util.py - parser, plotting etc
 ├── init_files - various initialization files
     ├── init.txt
     ├── init_topo_exmple.txt
