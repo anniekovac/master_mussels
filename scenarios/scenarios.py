@@ -193,6 +193,7 @@ def publish_modes():
              new_msg.working_mode = mode
              new_msg.working_mode_time = time
              pub.publish(new_msg)
+             listener()
              rate.sleep()
 
 
@@ -205,6 +206,34 @@ def scenario5():
     # while not rospy.is_shutdown():
 
 
+def callback(data):
+    print("callback")
+    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+
+
+def listener():
+    #rospy.init_node('listener', anonymous=True)
+    rospy.Subscriber("working_mode", WorkingModes, callback)
+    # spin() simply keeps python from exiting until this node is stopped
+    rospy.spin()
+
+    # def callback(data):
+    #     twist = Twist()
+    #     twist.linear.x = 4*data.axes[1]
+    #     twist.angular.z = 4*data.axes[0]
+    #     pub.publish(twist)
+    #
+    # # Intializes everything
+    # def start():
+    #     # publishing to "turtle1/cmd_vel" to control turtle1
+    #     global pub
+    #     pub = rospy.Publisher('turtle1/cmd_vel', Twist)
+    #     # subscribed to joystick inputs on topic "joy"
+    #     rospy.Subscriber("joy", Joy, callback)
+    #     # starts the node
+    #     rospy.init_node('Joy2Turtle')
+    #     rospy.spin()
+
 
 if __name__ == '__main__':
     #rospy.init_node('topology', anonymous=True)
@@ -212,5 +241,6 @@ if __name__ == '__main__':
     #scenario5()
     try:
         publish_modes()
+        listener()
     except rospy.ROSInterruptException:
         pass
