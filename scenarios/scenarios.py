@@ -2,7 +2,7 @@ import data_structures
 import rospy
 from util import plot_energy, Annotate, parser
 from std_msgs.msg import String
-import WorkingModes.msg
+from controller.msg import WorkingModes
 
 
 def scenario1():
@@ -184,15 +184,16 @@ def scenario4():
 
 
 def publish_modes():
-     pub = rospy.Publisher('chatter', String, queue_size=10)
+     pub = rospy.Publisher('working_mode', WorkingModes, queue_size=10)
      rospy.init_node('talker', anonymous=True)
      rate = rospy.Rate(10) # 10hz
      while not rospy.is_shutdown():
-         #for mode in [("sleep", 5), ("normal", 5), ("camera", 5)]:
-         hello_str = "hello world %s" % rospy.get_time()
-         rospy.loginfo(hello_str)
-         pub.publish(hello_str)
-         rate.sleep()
+         for mode, time in [("sleep", 5), ("normal", 5), ("camera", 5)]:
+             new_msg = WorkingModes()
+             new_msg.working_mode = mode
+             new_msg.working_mode_time = time
+             pub.publish(new_msg)
+             rate.sleep()
 
 
 def scenario5():

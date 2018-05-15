@@ -24,7 +24,7 @@ def move_scenario():
         xs.append(x)
         ys.append(y)
         r.sleep()
-        if len(xs) > 100:
+        if len(xs) > 10:
             break
     util.plot_coordinates(xs, ys)
 
