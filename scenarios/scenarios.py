@@ -3,6 +3,7 @@ import rospy
 from util import plot_energy, Annotate, parser
 from std_msgs.msg import String
 from controller.msg import WorkingModes
+from salesman import go_to_nearest
 
 
 def scenario1():
@@ -193,17 +194,18 @@ def publish_modes():
              new_msg.working_mode = mode
              new_msg.working_mode_time = time
              pub.publish(new_msg)
-             listener()
+             #listener()
              rate.sleep()
 
 
 def scenario5():
     system = parser()
-    system.plot_topology()
+
     frequency = 1.0/system.deltat
-    rospy.init_node('topology', anonymous=True)
-    r = rospy.Rate(frequency)  # 1 Hz
-    # while not rospy.is_shutdown():
+    points = [list(mussel.coordinates) for mussel in system.mussels]
+    print(go_to_nearest(points, system))
+
+
 
 
 def callback(data):
@@ -217,30 +219,12 @@ def listener():
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
 
-    # def callback(data):
-    #     twist = Twist()
-    #     twist.linear.x = 4*data.axes[1]
-    #     twist.angular.z = 4*data.axes[0]
-    #     pub.publish(twist)
-    #
-    # # Intializes everything
-    # def start():
-    #     # publishing to "turtle1/cmd_vel" to control turtle1
-    #     global pub
-    #     pub = rospy.Publisher('turtle1/cmd_vel', Twist)
-    #     # subscribed to joystick inputs on topic "joy"
-    #     rospy.Subscriber("joy", Joy, callback)
-    #     # starts the node
-    #     rospy.init_node('Joy2Turtle')
-    #     rospy.spin()
-
 
 if __name__ == '__main__':
-    #rospy.init_node('topology', anonymous=True)
-    #time = rospy.Time().now()
-    #scenario5()
+    rospy.init_node('topology', anonymous=True)
     try:
-        publish_modes()
-        listener()
+        #publish_modes()
+        #listener()
+        scenario5()
     except rospy.ROSInterruptException:
         pass
