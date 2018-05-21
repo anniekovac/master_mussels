@@ -1,9 +1,11 @@
-amussel:23,1,0
-amussel:69,1,1
-amussel:78,0,1
+amussel:23,1,15
+amussel:69,1,20
+amussel:78,20,1
 amussel:98,0,0
-amussel:100,0,2
-apad:100,2,2
-apad:73,3,3
+amussel:100,0,25
+amussel:100,2,2
+amussel:73,3,34
+amussel:73,3,7
+amussel:73,3,20
 apad:67,3,4
 deltat:1
