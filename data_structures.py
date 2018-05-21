@@ -77,6 +77,7 @@ class aMussel(EnergyBase):
         self.working_mode = [working_mode]
         self.coordinates = (None, None)
         self.set_of_events = []
+        self.order_of_passing = None
         if "charge" in self.working_mode:
             self.on_surface = True
         else:
