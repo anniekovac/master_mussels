@@ -40,7 +40,7 @@ def parser(filename=None):
     :return: topology.Topology() class instance
     """
     if filename is None:
-        filename = "init.txt"
+        filename = os.path.join(os.getcwd(), "..", "init_files", "init.txt")
     with open(filename, "r") as init:
         agents = []
         for line in init:
