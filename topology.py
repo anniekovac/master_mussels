@@ -1,6 +1,7 @@
 from data_structures import aPad, aMussel
 import random, numpy, os
 import util
+import time
 
 
 class Topology(object):
@@ -16,7 +17,7 @@ class Topology(object):
         self.pads = []
         self.deltat = None
 
-    def plot_topology(self):
+    def plot_topology(self, save=False):
         """
         This function is used for 2D plotting
         topology. Mussels are marked with one colour,
@@ -43,7 +44,10 @@ class Topology(object):
             ax.annotate(str(apad.energy), (pads_x[i] + 0.05, pads_y[i] + 0.05))
 
         plt.grid()
-        plt.show()
+        if save:
+            plt.savefig(str(time.time()).replace(".", "")+".jpg")
+        else:
+            plt.show()
 
 
 if __name__ == '__main__':
