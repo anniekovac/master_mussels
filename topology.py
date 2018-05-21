@@ -17,11 +17,13 @@ class Topology(object):
         self.pads = []
         self.deltat = None
 
-    def plot_topology(self, save=False):
+    def plot_topology(self, save=False, annotate_energy=True):
         """
         This function is used for 2D plotting
         topology. Mussels are marked with one colour,
         Pads are marked with another.
+        :param save: boolean (if you want to save a figure - saving with name of this second so it's unique)
+        :param annotate_energy: boolean (if you want to write energy levels of agents on plots)
         """
         import matplotlib.pyplot as plt
         mussels_x = [item.coordinates[0] for item in self.mussels]
@@ -38,7 +40,9 @@ class Topology(object):
         plt.legend()
 
         for (i, mussel) in enumerate(self.mussels):
-            ax.annotate(str(mussel.energy), (mussels_x[i] + 0.05, mussels_y[i] + 0.05))
+            if annotate_energy:
+                ax.annotate(str(mussel.energy), (mussels_x[i] + 0.05, mussels_y[i] + 0.05))
+            ax.annotate(str(mussel.order_of_passing), (mussels_x[i] - 0.08, mussels_y[i] - 0.08))
 
         for (i, apad) in enumerate(self.pads):
             ax.annotate(str(apad.energy), (pads_x[i] + 0.05, pads_y[i] + 0.05))
