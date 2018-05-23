@@ -44,7 +44,7 @@ def travelling_salesman(points, start=None):
     return min([perm for perm in permutations(points) if perm[0] == start], key=total_distance)
 
 
-def go_to_nearest(points, system=None, start=None):
+def go_to_nearest(system, start=None):
     """
     As solving the problem in the brute force way is too slow,
     this function implements a simple heuristic: always
@@ -59,21 +59,28 @@ def go_to_nearest(points, system=None, start=None):
     >>> optimized_travelling_salesman([[0,0],[10,0],[6,0]])
     [[0, 0], [6, 0], [10, 0]]
     """
+    points = [list(mussel.coordinates) for mussel in system.mussels]
+    print(points)
+    print(start)
     if start is None:
         start = points[0]
     must_visit = points
     path = [start]
+    counter = 1
     must_visit.remove(start)
+    for x in system.mussels:
+        if x.coordinates == start:
+            x.order_of_passing = counter
+            break
     while must_visit:
+        counter += 1
         nearest = min(must_visit, key=lambda x: distance(path[-1], x))
         path.append(nearest)
+        for x in system.mussels:
+            if list(x.coordinates) == nearest:
+                x.order_of_passing = counter
+                break
         must_visit.remove(nearest)
-        top = Topology()
-        for coordinates in must_visit:
-            mussel = aMussel(50)
-            mussel.coordinates = coordinates
-            top.mussels.append(mussel)
-        top.plot_topology(save=True)
     return path
 
 

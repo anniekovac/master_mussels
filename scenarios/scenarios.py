@@ -3,7 +3,7 @@ import rospy
 from util import plot_energy, Annotate, parser
 from std_msgs.msg import String
 from controller.msg import WorkingModes
-from salesman import go_to_nearest
+from salesman import go_to_nearest, distance
 
 
 def scenario1():
@@ -200,10 +200,12 @@ def publish_modes():
 
 def scenario5():
     system = parser()
-
     frequency = 1.0/system.deltat
-    points = [list(mussel.coordinates) for mussel in system.mussels]
-    print(go_to_nearest(points, system))
+    start = min([list(item.coordinates) for item in system.mussels], key=lambda x: distance(list(system.pads[0].coordinates), x))
+    #print(start)
+    print(go_to_nearest(system, start=start))
+
+    system.plot_topology(annotate_energy=False, order_of_passing=True)
 
 
 
