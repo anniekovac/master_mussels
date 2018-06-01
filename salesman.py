@@ -7,11 +7,6 @@ from data_structures import aMussel
 def distance(point1, point2):
     """
     Returns the Euclidean distance of two points in the Cartesian Plane.
-
-    >>> distance([3,4],[0,0])
-    5.0
-    >>> distance([3,6],[10,6])
-    7.0
     """
     return ((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2) ** 0.5
 
@@ -20,11 +15,6 @@ def total_distance(points):
     """
     Returns the length of the path passing throught
     all the points in the given order.
-
-    >>> total_distance([[1,2],[4,6]])
-    5.0
-    >>> total_distance([[3,6],[7,6],[12,6]])
-    9.0
     """
     return sum([distance(point, points[index + 1]) for index, point in enumerate(points[:-1])])
 
@@ -46,24 +36,17 @@ def travelling_salesman(points, start=None):
 
 def go_to_nearest(system, start=None):
     """
-    As solving the problem in the brute force way is too slow,
-    this function implements a simple heuristic: always
-    go to the nearest city.
-
-    Even if this algoritmh is extremely simple, it works pretty well
-    giving a solution only about 25% longer than the optimal one (cit. Wikipedia),
-    and runs very fast in O(N^2) time complexity.
-
-    >>> optimized_travelling_salesman([[i,j] for i in range(5) for j in range(5)])
-    [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [1, 4], [1, 3], [1, 2], [1, 1], [1, 0], [2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [3, 4], [3, 3], [3, 2], [3, 1], [3, 0], [4, 0], [4, 1], [4, 2], [4, 3], [4, 4]]
-    >>> optimized_travelling_salesman([[0,0],[10,0],[6,0]])
-    [[0, 0], [6, 0], [10, 0]]
+    :arg system: instance of Topology class
+    :arg start: list (coordinates of a mussel from which algortihm is supposed to start from)
+    :return path: list of list (list of coordinates, in which order algortihm goes through mussels)
     """
     points = [list(mussel.coordinates) for mussel in system.mussels]
-    print(points)
-    print(start)
     if start is None:
         start = points[0]
+    for x in system.mussels:
+        if list(x.coordinates) == start:
+            x.order_of_passing = 1
+            break
     must_visit = points
     path = [start]
     counter = 1
@@ -81,7 +64,7 @@ def go_to_nearest(system, start=None):
                 x.order_of_passing = counter
                 break
         must_visit.remove(nearest)
-    return path
+    return total_distance(path)
 
 
 def main():
