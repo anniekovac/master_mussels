@@ -90,7 +90,7 @@ def cycle_crossover(guess1, guess2, mut_prob):
             iFather = mother.index(father[iFather])
 
     guessChild = Guess(child)
-    guessChild.fitness = get_fitness(guessChild)
+    # guessChild.fitness = get_fitness(guessChild)
     guessChild.points = [points_dict[i] for i in child]
     return guessChild
 
@@ -197,7 +197,7 @@ def generate_population(points, n):
         fitness = get_fitness(guess_instance)
         guess_instance.fitness = fitness
         population.append(guess_instance)
-    print([item.gene for item in population])
+    #print([item.gene for item in population])
     return population
 
 
@@ -228,19 +228,28 @@ def k_gen_algorithm(points, n, iterations, mut_prob, mse_exit_criteria=0.01, eli
         if elitism:
             greatest_fitness = max([item.fitness for item in population])
             new_population.append([guess for guess in population if guess.fitness == greatest_fitness][0])
-        while len(new_population) < n:
+        while len(new_population) <= n:
+            # print(len(new_population))
+            if len(new_population) == 35 and i==2490:
+                for item in new_population:
+                    print(item.gene)
+
             first_parent = roulette_wheel(population)
             second_parent = roulette_wheel(population)
+            # print("parent1: ", first_parent.gene)
+            # print("parent2: ", second_parent.gene)
             child = cycle_crossover(first_parent, second_parent, mut_prob)
-            print(child)
+            # print("child:", child.gene)
+            # print("-------------------------------------------------------------")
+            # print(child)
             fitness = get_fitness(child)
             child.fitness = fitness
             new_population.append(child)
         population = new_population
         max_fitness = max([item.fitness for item in population])
         best = max(population, key=attrgetter('fitness'))
-        if i % 100 == 0:
-            print(salesman.total_distance(best.points))
+        # if i % 100 == 0:
+        #     print(salesman.total_distance(best.points))
     return best
 
 
@@ -258,5 +267,13 @@ def main(points):
 
 
 if __name__ == "__main__":
+    """
+    Znaci: prva generacija se dobro izgenerira. Crossover cycle dobro radi.
+    Treba provjeriti:
+    - dobiju li se roulette wheelom razliciti roditelji
+    - nesto sa deep copy?
+    2. zakljucak: s vremenom kroz iteracije svi geni postaju isti. sto se tu
+    moglo dogoditi.
+    """
     #main()
     printCycle()
