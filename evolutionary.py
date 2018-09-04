@@ -12,7 +12,7 @@ class Guess(object):
         """
         :param genes: list of integers
         :param fitness: float
-        :param MSE: float
+        :param points: list of floats (points)
         """
         self.gene = gene
         self.fitness = None
@@ -26,7 +26,10 @@ def get_fitness(guess_instance):
     :param guess_instance: instance of Guess class
     :return: float (fitness)
     """
-    return (1/ 1 + salesman.total_distance(guess_instance.points))
+    try:
+        return (1/ 1 + salesman.total_distance(guess_instance.points))
+    except:
+        print(guess_instance.gene)
 
 
 def evaluation(system):
@@ -50,6 +53,55 @@ def mutation(guess, mutation_probability=0.01):
         if numpy.random.uniform(low=0, high=1) <= mutation_probability:
             gene[index] = numpy.random.uniform(low=-4, high=4)
     return guess.gene
+
+
+def cycle_crossover(guess1, guess2, mut_prob):
+    """
+    This function implements cycle crossover.
+    :param guess1: Guess instance
+    :param guess2: Guess instance
+    :param mut_prob: float
+    :return: Guess instance
+    """
+    mother = guess1.gene
+    father = guess2.gene
+    # mother = guess1
+    # father = guess2
+    geneLen = len(mother)
+    child = [None] * geneLen
+
+    while (None in child):
+        try:
+            iMother = child.index(None)
+        except ValueError:
+            break
+
+        while (child[iMother] is None):
+            child[iMother] = mother[iMother]
+            iMother = father.index(mother[iMother])
+
+        try:
+            iFather = child.index(None)
+        except ValueError:
+            break
+
+        while (child[iFather] is None):
+            child[iFather] = father[iFather]
+            iFather = mother.index(father[iFather])
+
+    guessChild = Guess(child)
+    guessChild.fitness = get_fitness(guessChild)
+    guessChild.points = [points_dict[i] for i in child]
+    return guessChild
+
+
+def printCycle():
+    m = [1, 2, 3, 4, 5, 6, 7, 8]
+    f = [3, 8, 7, 2, 6, 5, 1, 4]
+    c = cycle_crossover(m, f, 0.5)
+    print("m: ", m)
+    print("f: ", f)
+    print(c)
 
 
 def crossover(guess1, guess2, mut_prob):
@@ -104,12 +156,12 @@ def crossover(guess1, guess2, mut_prob):
             break
 
 
-    print(mother)
-    print(father)
-    print("\n")
+    #print(mother)
+    #print(father)
+    #print("\n")
 
-    print(child1)
-    print(child2)
+    #print(child1)
+    #print(child2)
 
     child1 = father[:index1] + mother[index1:index2] + father[index2:]
     child2 = mother[:index1] + father[index1:index2] + mother[index2:]
@@ -122,7 +174,8 @@ def crossover(guess1, guess2, mut_prob):
 
 
 
-    return (child1_instance, child2_instance)
+    #return (child1_instance, child2_instance)
+    return child1_instance
 
 
 def generate_population(points, n):
@@ -144,7 +197,7 @@ def generate_population(points, n):
         fitness = get_fitness(guess_instance)
         guess_instance.fitness = fitness
         population.append(guess_instance)
-    #print([item.gene for item in population])
+    print([item.gene for item in population])
     return population
 
 
@@ -166,6 +219,8 @@ def roulette_wheel(population):
 
 def k_gen_algorithm(points, n, iterations, mut_prob, mse_exit_criteria=0.01, elitism=True):
     population = generate_population(points, n)
+    # for item in population:
+    #     print(item.gene)
     i = iterations
     while i:
         i -= 1
@@ -176,11 +231,8 @@ def k_gen_algorithm(points, n, iterations, mut_prob, mse_exit_criteria=0.01, eli
         while len(new_population) < n:
             first_parent = roulette_wheel(population)
             second_parent = roulette_wheel(population)
-            #print(first_parent.gene)
-            #print(second_parent.gene)
-            child = crossover(first_parent, second_parent, mut_prob)
-            #print(child.gene)
-            #break
+            child = cycle_crossover(first_parent, second_parent, mut_prob)
+            print(child)
             fitness = get_fitness(child)
             child.fitness = fitness
             new_population.append(child)
@@ -189,10 +241,7 @@ def k_gen_algorithm(points, n, iterations, mut_prob, mse_exit_criteria=0.01, eli
         best = max(population, key=attrgetter('fitness'))
         if i % 100 == 0:
             print(salesman.total_distance(best.points))
-            #print([item.gene for item in population])
-            #print("iteration: {}, max fitness: {}".format(iterations - i, max_fitness))
-            #break
-    return max_fitness
+    return best
 
 
 def main(points):
@@ -209,4 +258,5 @@ def main(points):
 
 
 if __name__ == "__main__":
-    main()
+    #main()
+    printCycle()
