@@ -59,5 +59,5 @@ class Topology(object):
 
 
 if __name__ == '__main__':
-    topology = util.parser(filename=os.path.join(os.getcwd(), "init_files", "init_topo_exmple.txt"))
-    topology.plot_topology()
+    topology = util.parser(filename=os.path.join(os.getcwd(), "init_files", "evolutionary_init.txt"))
+    #topology.plot_topology(order_of_passing=True)
