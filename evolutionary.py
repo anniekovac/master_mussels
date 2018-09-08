@@ -26,10 +26,7 @@ def get_fitness(guess_instance):
     :param guess_instance: instance of Guess class
     :return: float (fitness)
     """
-    try:
-        return (1/ 1 + salesman.total_distance(guess_instance.points))
-    except:
-        print(guess_instance.gene)
+    return 1/(1 + salesman.total_distance(guess_instance.points))
 
 
 def evaluation(system):
@@ -41,18 +38,25 @@ def evaluation(system):
     pass
 
 
-def mutation(guess, mutation_probability=0.01):
+def mutation(gene, mutation_probability=0.01):
     """
     Mutation of one guess.
-    :param guess: Guess instance
+    :param gene: list
     :param mutation_probability: float (probability for a mutation to happen)
     :return: Guess instance (new mutated guess)
     """
-    gene = guess.gene
     for index, num in enumerate(gene):
         if numpy.random.uniform(low=0, high=1) <= mutation_probability:
-            gene[index] = numpy.random.uniform(low=-4, high=4)
-    return guess.gene
+
+            index1 = random.randint(0, len(gene)-1)
+            index2 = random.randint(0, len(gene)-1)
+            a = gene[index1]
+            b = gene[index2]
+            gene[index1] = b
+            gene[index2] = a
+
+    return gene
+    #return guess.gene
 
 
 def cycle_crossover(guess1, guess2, mut_prob):
@@ -89,7 +93,8 @@ def cycle_crossover(guess1, guess2, mut_prob):
             child[iFather] = father[iFather]
             iFather = mother.index(father[iFather])
 
-    guessChild = Guess(child)
+    mutChild = mutation(child)
+    guessChild = Guess(mutChild)
     # guessChild.fitness = get_fitness(guessChild)
     guessChild.points = [points_dict[i] for i in child]
     return guessChild
@@ -217,7 +222,7 @@ def roulette_wheel(population):
             return key
 
 
-def k_gen_algorithm(points, n, iterations, mut_prob, mse_exit_criteria=0.01, elitism=True):
+def k_gen_algorithm(points, n, iterations, mut_prob, mse_exit_criteria=0.01, elitism=False):
     population = generate_population(points, n)
     # for item in population:
     #     print(item.gene)
@@ -241,7 +246,7 @@ def k_gen_algorithm(points, n, iterations, mut_prob, mse_exit_criteria=0.01, eli
             child = cycle_crossover(first_parent, second_parent, mut_prob)
             # print("child:", child.gene)
             # print("-------------------------------------------------------------")
-            # print(child)
+            # return
             fitness = get_fitness(child)
             child.fitness = fitness
             new_population.append(child)
@@ -250,20 +255,21 @@ def k_gen_algorithm(points, n, iterations, mut_prob, mse_exit_criteria=0.01, eli
         best = max(population, key=attrgetter('fitness'))
         # if i % 100 == 0:
         #     print(salesman.total_distance(best.points))
+    print(max_fitness)
     return best
 
 
 def main(points):
-    n = 35  # POPULATION SIZE
+    n = 25  # POPULATION SIZE
     mut_prob = 0.01  # MUTATION PROBABILITY
-    number_of_iterations = 2500  # NUMBER OF ITERATIONS
-
+    number_of_iterations = 12500  # NUMBER OF ITERATION7
     global points_dict
     for i in range(0, len(points)):
         points_dict[i+1] = points[i]
 
     best = k_gen_algorithm(points, n, number_of_iterations, mut_prob, mse_exit_criteria=0.005)
     print("Best guess is: {}".format(best.gene))
+    return (best.gene, points_dict)
 
 
 if __name__ == "__main__":
@@ -276,4 +282,5 @@ if __name__ == "__main__":
     moglo dogoditi.
     """
     #main()
-    printCycle()
+    #printCycle()
+    print(mutation([1, 2, 3, 4, 5], 1.0))
