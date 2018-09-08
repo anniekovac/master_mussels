@@ -4,6 +4,7 @@ from util import plot_energy, Annotate, parser
 from std_msgs.msg import String
 from controller.msg import WorkingModes
 from salesman import go_to_nearest, distance
+import evolutionary
 
 
 def scenario1():
@@ -198,16 +199,24 @@ def publish_modes():
              rate.sleep()
 
 
-def scenario5():
-    system = parser()
-    frequency = 1.0/system.deltat
-    start = min([list(item.coordinates) for item in system.mussels], key=lambda x: distance(list(system.pads[0].coordinates), x))
-    #print(start)
-    print(go_to_nearest(system, start=start))
-
+def scenarioEvolutionary():
+    system = parser(filename="evolutionary_init.txt")
+    mussel_coordinates = [list(item.coordinates) for item in system.mussels]
+    start = min(mussel_coordinates, key=lambda x: distance(list(system.pads[0].coordinates), x))
+    bestGene, points_dict = evolutionary.main(mussel_coordinates)
+    switchDict = dict()
+    for key, item in points_dict.items():
+        switchDict[tuple(item)] = key
+    for i, mussel in enumerate(system.mussels):
+        system.mussels[i].order_of_passing = switchDict[mussel.coordinates]
     system.plot_topology(annotate_energy=False, order_of_passing=True)
 
 
+def scenarioGoToNearest():
+    system = parser(filename="evolutionary_init.txt")
+    mussel_coordinates = [list(item.coordinates) for item in system.mussels]
+    start = min(mussel_coordinates, key=lambda x: distance(list(system.pads[0].coordinates), x))
+    system.plot_topology(annotate_energy=False, order_of_passing=True)
 
 
 def callback(data):
@@ -223,10 +232,11 @@ def listener():
 
 
 if __name__ == '__main__':
-    rospy.init_node('topology', anonymous=True)
-    try:
-        #publish_modes()
-        #listener()
-        scenario5()
-    except rospy.ROSInterruptException:
-        pass
+    scenario5()
+    # rospy.init_node('topology', anonymous=True)
+    # try:
+    #     #publish_modes()
+    #     #listener()
+    #     scenario5()
+    # except rospy.ROSInterruptException:
+    #     pass
