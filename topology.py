@@ -17,7 +17,7 @@ class Topology(object):
         self.pads = []
         self.deltat = None
 
-    def plot_topology(self, save=False, annotate_energy=True, order_of_passing=False):
+    def plot_topology(self, save=False, annotate_energy=True, order_of_passing=False, title=None):
         """
         This function is used for 2D plotting
         topology. Mussels are marked with one colour,
@@ -49,9 +49,14 @@ class Topology(object):
                 ax.annotate(str(mussel.order_of_passing), (mussels_x[i] - 0.08, mussels_y[i] - 0.08))
 
         for (i, apad) in enumerate(self.pads):
-            ax.annotate(str(apad.energy), (pads_x[i] + 0.05, pads_y[i] + 0.05))
+            if annotate_energy:
+                ax.annotate(str(apad.energy), (pads_x[i] + 0.05, pads_y[i] + 0.05))
 
         plt.grid()
+        plt.xlabel("X coordinates of agents")
+        plt.ylabel("Y coordinates of agents")
+        if title:
+            plt.title(title)
         if save:
             plt.savefig(str(time.time()).replace(".", "")+".jpg")
         else:
