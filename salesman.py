@@ -13,7 +13,7 @@ def distance(point1, point2):
 
 def total_distance(points):
     """
-    Returns the length of the path passing throught
+    Returns the length of the path passing through
     all the points in the given order.
     """
     return sum([distance(point, points[index + 1]) for index, point in enumerate(points[:-1])])
@@ -64,7 +64,8 @@ def go_to_nearest(system, start=None):
                 x.order_of_passing = counter
                 break
         must_visit.remove(nearest)
-    return total_distance(path)
+    #return total_distance(path)
+    return path
 
 
 def main():
