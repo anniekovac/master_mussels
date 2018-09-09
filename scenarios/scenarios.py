@@ -3,7 +3,7 @@ import rospy
 from util import plot_energy, Annotate, parser
 from std_msgs.msg import String
 from controller.msg import WorkingModes
-from salesman import go_to_nearest, distance
+from salesman import go_to_nearest, distance, total_distance
 import evolutionary
 
 
@@ -198,25 +198,45 @@ def publish_modes():
              #listener()
              rate.sleep()
 
+def orderPointsByPassing(system):
+    points = len(system.mussels)*[None]
+    for mussel in system.mussels:
+        points[mussel.order_of_passing-1] = mussel.coordinates
+    return points
+
 
 def scenarioEvolutionary():
     system = parser(filename="evolutionary_init.txt")
     mussel_coordinates = [list(item.coordinates) for item in system.mussels]
-    start = min(mussel_coordinates, key=lambda x: distance(list(system.pads[0].coordinates), x))
     bestGene, points_dict = evolutionary.main(mussel_coordinates)
     switchDict = dict()
     for key, item in points_dict.items():
         switchDict[tuple(item)] = key
     for i, mussel in enumerate(system.mussels):
         system.mussels[i].order_of_passing = switchDict[mussel.coordinates]
-    system.plot_topology(annotate_energy=False, order_of_passing=True)
+    # points = orderPointsByPassing(system)
+    points = bestGene.points
+    totalDistance = total_distance(points)
+    system.plot_topology(annotate_energy=False, order_of_passing=True, title="Way of prioritizing: Evolutionary algorithm; fitness: minimum of distance; Total Distance: {}".format(totalDistance))
+
+
+def scenarioGoToNearestRandom():
+    system = parser(filename="evolutionary_init.txt")
+    mussel_coordinates = [list(item.coordinates) for item in system.mussels]
+    #start = min(mussel_coordinates, key=lambda x: distance(list(system.pads[0].coordinates), x))
+    #print("Total distance is {}".format(go_to_nearest(system, start)))
+    points = go_to_nearest(system)
+    totalDistance = total_distance(points)
+    system.plot_topology(annotate_energy=False, order_of_passing=True, title="Way of prioritizing: Go to nearest point with random first point; Total Distance: {}".format(totalDistance))
 
 
 def scenarioGoToNearest():
     system = parser(filename="evolutionary_init.txt")
     mussel_coordinates = [list(item.coordinates) for item in system.mussels]
     start = min(mussel_coordinates, key=lambda x: distance(list(system.pads[0].coordinates), x))
-    system.plot_topology(annotate_energy=False, order_of_passing=True)
+    points = go_to_nearest(system, start)
+    totalDistance = total_distance(points)
+    system.plot_topology(annotate_energy=False, order_of_passing=True, title="Way of prioritizing: Go to nearest point with nearest first point; Total Distance: {}".format(totalDistance))
 
 
 def callback(data):
@@ -232,7 +252,9 @@ def listener():
 
 
 if __name__ == '__main__':
-    scenario5()
+    scenarioEvolutionary()
+    #scenarioGoToNearestRandom()
+    #scenarioGoToNearest()
     # rospy.init_node('topology', anonymous=True)
     # try:
     #     #publish_modes()
