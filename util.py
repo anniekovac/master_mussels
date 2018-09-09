@@ -41,6 +41,8 @@ def parser(filename=None):
     """
     if filename is None:
         filename = os.path.join(os.getcwd(), "..", "init_files", "init.txt")
+    else:
+        filename = os.path.join(os.getcwd(), "..", "init_files", filename)
     with open(filename, "r") as init:
         agents = []
         for line in init:
