@@ -208,16 +208,16 @@ def orderPointsByPassing(system):
 def scenarioEvolutionary():
     system = parser(filename="evolutionary_init.txt")
     mussel_coordinates = [list(item.coordinates) for item in system.mussels]
-    bestGene, points_dict = evolutionary.main(mussel_coordinates)
+    bestGene, points_dict = evolutionary.main(mussel_coordinates, system.pads[0].coordinates)
     switchDict = dict()
     for key, item in points_dict.items():
         switchDict[tuple(item)] = key
-    for i, mussel in enumerate(system.mussels):
-        system.mussels[i].order_of_passing = switchDict[mussel.coordinates]
-    # points = orderPointsByPassing(system)
+    # for i, mussel in enumerate(system.mussels):
     points = bestGene.points
-    totalDistance = total_distance(points)
-    system.plot_topology(annotate_energy=False, order_of_passing=True, title="Way of prioritizing: Evolutionary algorithm; fitness: minimum of distance; Total Distance: {}".format(totalDistance))
+    for i, mussel in enumerate(system.mussels):
+        system.mussels[i].order_of_passing = points.index(list(mussel.coordinates))
+    totalDistance = total_distance(points, system.pads[0].coordinates)
+    system.plot_topology(annotate_energy=False, order_of_passing=True, title="Way of prioritizing: Evolutionary algorithm; Total Distance: {}".format(totalDistance))
 
 
 def scenarioGoToNearestRandom():

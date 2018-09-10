@@ -19,14 +19,24 @@ class Guess(object):
         self.points = None
 
 
-def get_fitness(guess_instance):
+def get_fitness(guess_instance, apadCoordinates):
     """
     Calculating fitness function for set of genes given with guess_instance.
     Fitness function for now is just total distance between
     :param guess_instance: instance of Guess class
     :return: float (fitness)
     """
-    return 1/(1 + salesman.total_distance(guess_instance.points))
+    return 1/(1 + salesman.total_distance(guess_instance.points,  apadCoordinates))
+
+
+def get_fitnessSoCPriority(guess_instance, apadCoordinates):
+    """
+    Calculating fitness function for set of genes given with guess_instance.
+    Fitness function for now is just total distance between
+    :param guess_instance: instance of Guess class
+    :return: float (fitness)
+    """
+    return 1/(1 + salesman.total_distance(guess_instance.points, apadCoordinates))
 
 
 def evaluation(system):
@@ -66,30 +76,33 @@ def position_based_crossover(guess1, guess2, mut_prob):
     :param mut_prob: float
     :return: Guess instance
     """
-    mother = guess1
-    father = guess2
-    # mother = guess1.gene
-    # father = guess2.gene
+    mother = guess1.gene
+    father = guess2.gene
     geneLen = len(mother)
     child = [None] * geneLen
     for i, gene in enumerate(child):
-        if random.random(0, 1) <= 0.5:
+        if random.random() <= 0.5:
             child[i] = mother[i]
-        else:
-            child[i] = father[i]
-    # mutChild = mutation(child)
-    # guessChild = Guess(mutChild)
-    # guessChild.points = [points_dict[i] for i in mutChild]
-    # return guessChild
+    fathersGenes = [item for item in father if item not in child]
+    counter = 0
+    for i, gene in enumerate(child):
+        if gene is None:
+            child[i] = fathersGenes[counter]
+            counter += 1
+
+    mutChild = mutation(child)
+    guessChild = Guess(mutChild)
+    guessChild.points = [points_dict[i] for i in mutChild]
+    return guessChild
     
 
 def printPositionBased():
     gene1 = [1, 2, 3, 4, 5, 6, 7, 8]
     gene2 = [3, 8, 7, 2, 6, 5, 1, 4]
-    position_based_crossover(gene1, gene2, 0.01)
+    child = position_based_crossover(gene1, gene2, 0.01)
     print("mother: {}".format(gene1))
     print("father: {}".format(gene2))
-    print("child: ")
+    print("child: {}".format(child))
 
 
 def cycle_crossover(guess1, guess2, mut_prob):
@@ -102,8 +115,6 @@ def cycle_crossover(guess1, guess2, mut_prob):
     """
     mother = guess1.gene
     father = guess2.gene
-    # mother = guess1
-    # father = guess2
     geneLen = len(mother)
     child = [None] * geneLen
 
@@ -128,7 +139,6 @@ def cycle_crossover(guess1, guess2, mut_prob):
 
     mutChild = mutation(child)
     guessChild = Guess(mutChild)
-    # guessChild.fitness = get_fitness(guessChild)
     guessChild.points = [points_dict[i] for i in mutChild]
     return guessChild
 
@@ -142,7 +152,7 @@ def printCycle():
     print(c)
 
 
-def generate_population(points, n):
+def generate_population(points, n, apadCoordinates):
     """
     Generating first population. Genes are random variations of the
     order of passing through points.
@@ -158,7 +168,7 @@ def generate_population(points, n):
         guess_instance = Guess(genes)
         instance_points = [points_dict[i] for i in genes]
         guess_instance.points = instance_points
-        fitness = get_fitness(guess_instance)
+        fitness = get_fitness(guess_instance, apadCoordinates)
         guess_instance.fitness = fitness
         population.append(guess_instance)
     #print([item.gene for item in population])
@@ -187,10 +197,8 @@ def roulette_wheel(population):
             return key
 
 
-def k_gen_algorithm(points, n, iterations, mut_prob, elitism=False):
-    population = generate_population(points, n)
-    # for item in population:
-    #     print(item.gene)
+def k_gen_algorithm(points, n, iterations, mut_prob, apadCoordinates, elitism=True):
+    population = generate_population(points, n, apadCoordinates)
     i = iterations
     while i:
         i -= 1
@@ -201,37 +209,35 @@ def k_gen_algorithm(points, n, iterations, mut_prob, elitism=False):
         while len(new_population) <= n:
             first_parent = roulette_wheel(population)
             second_parent = roulette_wheel(population)
-            child = cycle_crossover(first_parent, second_parent, mut_prob)
-            fitness = get_fitness(child)
+            # child = cycle_crossover(first_parent, second_parent, mut_prob)
+            child = position_based_crossover(first_parent, second_parent, mut_prob)
+            fitness = get_fitness(child, apadCoordinates)
             child.fitness = fitness
             new_population.append(child)
         population = new_population
-        # if i == 1000:
-        #     print_points(population)
-        #     return
-        max_fitness = max([item.fitness for item in population])
+        # max_fitness = max([item.fitness for item in population])
         best = max(population, key=attrgetter('fitness'))
-        # if i % 100 == 0:
-        #     print(i, ": ", best.points)
-    print(max_fitness)
     return best
 
 
-def main(points):
+def main(points, apadCoordinates):
     n = 25  # POPULATION SIZE
-    mut_prob = 0.01  # MUTATION PROBABILITY
+    mut_prob = 0.08  # MUTATION PROBABILITY
     number_of_iterations = 12500  # NUMBER OF ITERATION7
     global points_dict
     for i in range(0, len(points)):
         points_dict[i+1] = points[i]
 
-    best = k_gen_algorithm(points, n, number_of_iterations, mut_prob)
+    best = k_gen_algorithm(points, n, number_of_iterations, mut_prob, apadCoordinates)
+    print("Best guess is: {}".format([points_dict[item] for item in best.gene]))
     print("Best guess is: {}".format(best.gene))
-    print("Best length is: {}".format(salesman.total_distance(best.points)))
+    print("Best length is: {}".format(salesman.total_distance(best.points, apadCoordinates)))
+    print("Best fitness is: {}".format(get_fitness(best, apadCoordinates)))
     return (best, points_dict)
 
 
 if __name__ == "__main__":
     #main()
     #printCycle()
-    print(mutation([1, 2, 3, 4, 5], 1.0))
+    printPositionBased()
+    #print(mutation([1, 2, 3, 4, 5], 1.0))

@@ -11,12 +11,14 @@ def distance(point1, point2):
     return ((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2) ** 0.5
 
 
-def total_distance(points):
+def total_distance(points, padCoordinates):
     """
     Returns the length of the path passing through
     all the points in the given order.
     """
-    return sum([distance(point, points[index + 1]) for index, point in enumerate(points[:-1])])
+    # return sum([distance(point, points[index + 1]) for index, point in enumerate(points[:-1])])
+    return sum([distance(point, points[index + 1]) for index, point in enumerate(points[:-1])]) + distance(points[0], padCoordinates)
+
 
 
 def travelling_salesman(points, start=None):
